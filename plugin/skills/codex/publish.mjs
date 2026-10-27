@@ -51,6 +51,13 @@ if (!fs.existsSync(path.join(REPO, ".fangorn", "repo.json"))) {
   const init = run("repo", "init", "research");
   if (init.status) die(`repo init failed:\n${init.stderr || init.stdout}`);
 }
+const repoFile = path.join(REPO, ".fangorn", "repo.json");
+const repo = JSON.parse(fs.readFileSync(repoFile, "utf8"));
+if (repo.owner.toLowerCase() !== publisher.toLowerCase())
+  die(`${REPO} belongs to ${repo.owner}, but fangorn signs as ${publisher}. Switch ~/.fangorn/config.json back, or move ${REPO} aside to start a repo for this wallet.`);
+// Build on the on-chain tip, not the local one: a commit left by an earlier failed push would make this one a stale parent.
+const tip = run("status").stdout?.match(/On-chain tip:\s+(baf\w+)/)?.[1];
+if (tip && tip !== repo.head) fs.writeFileSync(repoFile, JSON.stringify({ ...repo, head: tip }, null, 2));
 fs.writeFileSync(path.join(REPO, "records.json"), JSON.stringify(r.records_json));
 const commit = run("commit", "records.json", "-m", draft.question);   // without --replace: adds to the repo
 if (commit.status) die(`commit failed:\n${commit.stderr || commit.stdout}`);

@@ -16,7 +16,8 @@
 
 export const TYPE = "codex.finding.v1";
 export const MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
-const ADDRESS = /^0x[0-9a-fA-F]{40}$/, APP_ID = /^0x[0-9a-fA-F]{64}$/, DURATION = /^P(\d+)([DWMY])$/, SLUG = /^[a-z0-9][a-z0-9-]{1,30}$/;
+const ADDRESS = /^0x[0-9a-fA-F]{40}$/, APP_ID = /^0x[0-9a-fA-F]{64}$/, DURATION = /^P(\d+)([DWMY])$/, SLUG = /^[a-z0-9][a-z0-9-]{1,30}$/,
+  PIN = /^npm:@?[^@\s]+@\d+\.\d+\.\d+$/;   // ponytail: npm only; pypi/crates when a finding needs them
 const DAYS = { D: 1, W: 7, M: 30, Y: 365 };
 export const until = (at, dur) => {
   const m = DURATION.exec(dur ?? "");
@@ -39,7 +40,7 @@ export async function record(d, publisher) {
     found_at, fresh_for: d.fresh_for, fresh_until: until(found_at, d.fresh_for), publisher: pub,
     model: d.model ?? null, cost_tokens: d.cost_tokens ?? null, cost_seconds: d.cost_seconds ?? null,
     claims: d.claims, answer: d.answer, citations: d.citations, method: d.method, caveats: d.caveats ?? null,
-    lineage: d.lineage ?? [],
+    lineage: d.lineage ?? [], pins: d.pins ?? [],
     citation_urls: d.citations.map((x) => x.url), uncited_claims: uncited } };
 }
 
@@ -212,6 +213,7 @@ export async function draft(input, env) {
   if (!claims.length) error("no claims: list the checkable statements, each with the url that supports it");
   if (!citations.length) error("no sources: a finding cites the pages it read");
   if (!d.fresh_for || !DURATION.test(d.fresh_for)) { if (d.fresh_for) warn(`fresh_for "${d.fresh_for}" is not PnD/PnW/PnM/PnY`); d.fresh_for = "P30D"; warn("fresh_for set to P30D: say how long this stays true"); }
+  for (const p of d.pins ?? []) if (!PIN.test(p)) error(`pin "${p}" is not npm:<package>@<major.minor.patch>`);
   if (d.cost_tokens == null) warn("cost_tokens is missing: what the research cost, which the leaderboard counts as saved when others reuse it");
 
   // Its topic and whether codex already holds it, from the question's vector.

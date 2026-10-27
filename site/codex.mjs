@@ -6,8 +6,10 @@ import { TYPE } from "./draft.mjs";
 export { TYPE };
 // Cosine between a question (QUERY prompt) and a finding (question + teaser, DOCUMENT prompt).
 // Fit on eval/check.jsonl by eval/check.mjs; rerun it when the corpus grows.
-// 2026-10-26, 4 findings: paraphrases 0.61–0.79, the nearest question codex does not hold 0.545.
-export const HIT = 0.58, NEAR = 0.42;
+// 2026-10-27, 9 findings (Workers AI): paraphrases 0.60–0.80, questions codex does not hold up to 0.644.
+// They overlap, so HIT sits above every non-hit: a false hit answers wrongly, a near only costs research
+// (and still returns the finding). ponytail: one cutoff; a reranker if the overlap keeps growing.
+export const HIT = 0.65, NEAR = 0.42;
 
 const dot = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; };
 const unit = (v) => { const n = Math.sqrt(dot(v, v)) || 1; return v.map((x) => x / n); };
@@ -22,7 +24,14 @@ const until = (r) => {
   const m = /^P(\d+)([DWMY])$/.exec(r.fresh_for ?? ""), t = Date.parse(r.found_at ?? "");
   return m && t ? new Date(t + m[1] * DAYS[m[2]] * 864e5).toISOString().slice(0, 10) : null;
 };
-const stale = (r, now = today()) => !!until(r) && until(r) < now;
+// A pin ("npm:<name>@<version>") has moved when the package's latest version (r.latest, set by the
+// Worker) is outside the pin's caret range: a new major, or a new minor while still 0.x.
+const PIN = /^npm:(@?[^@\s]+)@(\d+)\.(\d+)\.\d+/;
+export const moved = (r) => (r.pins ?? []).flatMap((p) => {
+  const m = PIN.exec(p), v = m && r.latest?.[m[1]], [maj, min] = (v ?? "").split(".").map(Number);
+  return v && (maj !== +m[2] || (maj === 0 && min !== +m[3])) ? [`${m[1]} is now ${v} (pinned ${p.slice(p.lastIndexOf("@") + 1)})`] : [];
+});
+const stale = (r, now = today()) => (!!until(r) && until(r) < now) || moved(r).length > 0;
 // A finding whose lineage names another supersedes it.
 const supersededBy = (rows) => {
   const m = new Map();
@@ -50,7 +59,7 @@ export const flags = (r) => [...new Set(INJECTION.filter(([re]) => texts(r).some
 const who = (r) => ({ pushed_by: r.owner ?? null, verified: !!r.owner && r.owner === String(r.publisher ?? "").toLowerCase() });
 const card = (r, score) => ({
   id: r.finding_id, question: r.question, teaser: r.teaser, topic: r.topic, found_at: r.found_at?.slice(0, 10),
-  fresh_until: until(r), stale: stale(r), ...(score != null ? { score: round(score) } : {}), ...who(r), flags: flags(r),
+  fresh_until: until(r), stale: stale(r), ...(moved(r).length ? { moved: moved(r) } : {}), ...(score != null ? { score: round(score) } : {}), ...who(r), flags: flags(r),
 });
 
 /** Each topic's centroid: the normalized mean of its findings' vectors. */
@@ -101,7 +110,7 @@ export function wiki(rows, { topic, tag, id } = {}) {
     const g = graph(rows), q = new Map(g.nodes.map((n) => [n.id, n.question]));
     const related = g.edges.filter((e) => e.a === r.finding_id || e.b === r.finding_id).slice(0, 6)
       .map((e) => { const o = e.a === r.finding_id ? e.b : e.a; return { id: o, question: q.get(o), weight: e.weight, why: e.why }; });
-    return { ...f, fresh_until: until(r), stale: stale(r), superseded_by: sup(r.finding_id), ...who(r), flags: flags(r), related };
+    return { ...f, fresh_until: until(r), stale: stale(r), moved: moved(r), superseded_by: sup(r.finding_id), ...who(r), flags: flags(r), related };
   }
   if (tag) {
     const in_ = fs.filter((r) => (r.tags ?? []).includes(tag)).sort((a, b) => (b.found_at ?? "").localeCompare(a.found_at ?? ""));
@@ -242,6 +251,10 @@ if (typeof process !== "undefined" && import.meta.url === `file://${process.argv
   assert(check(rows, [1, 0, 0]).verdict === "hit", "same vector is a hit");
   assert(check(rows, [0, 1, 0]).verdict === "stale", "an expired match is stale");
   assert(check([row("d", "x", [1, 0], { fresh_until: undefined, fresh_for: "P1D" })], [1, 0]).finding.fresh_until === "2026-10-02", "fresh_until from fresh_for");
+  const pinned = (latest, pin = "npm:@x/sdk@0.37.0") => check([row("p", "x", [1, 0], { pins: [pin], latest })], [1, 0]);
+  assert(pinned({ "@x/sdk": "0.37.4" }).verdict === "hit" && pinned({}).verdict === "hit", "a patch bump, or an unknown latest, keeps a pin fresh");
+  assert(pinned({ "@x/sdk": "0.38.0" }).verdict === "stale" && pinned({ "@x/sdk": "0.38.0" }).finding.moved[0].includes("0.38.0"), "a 0.x minor bump makes it stale, and says why");
+  assert(pinned({ "y": "1.9.0" }, "npm:y@1.2.3").verdict === "hit" && pinned({ "y": "2.0.0" }, "npm:y@1.2.3").verdict === "stale", "past 1.0 only a major bump does");
   assert(check(rows, [0, 0, 1]).verdict === "miss", "orthogonal is a miss");
   assert(check(rows, [0, 0, 1]).where.length === 2, "where lists the topics");
   assert(wiki(rows, { id: "a" }).superseded_by === "b", "lineage supersedes");

@@ -66,6 +66,9 @@ Keep what a finding needs, as you go:
 - a claim that came from another Fangorn app's record cites `{app: <appId>, id: <record id>}` instead
   of a url, with the exact words from that record: codex reads it with the app's own `get`;
 - roughly what the research cost in tokens.
+- for code: quote source at a commit SHA (`raw.githubusercontent.com/<org>/<repo>/<sha>/<path>`), not a
+  branch, and pin the package it came from (`pins`): the finding goes stale when that package's
+  latest version breaks the pin's caret range, whatever `fresh_for` says.
 
 ## 3. Offer to publish: once, at the end of the session
 
@@ -95,7 +98,8 @@ node <this skill's directory>/publish.mjs [--auto] draft.json   # --auto under p
 {"question": "…?", "teaser": "the answer in one line, with its numbers",
  "answer": "…", "fresh_for": "P30D", "cost_tokens": 40000, "model": "<your model id>",
  "claims": [{"text": "…", "url": "https://…", "quote": "exact words from the page"}],
- "caveats": "…", "lineage": ["<the stale or near finding's id, if this replaces or builds on it>"]}
+ "caveats": "…", "lineage": ["<the stale or near finding's id, if this replaces or builds on it>"],
+ "pins": ["npm:<package>@<version> the code was read from, if any"]}
 ```
 
 If a problem says a quote is not on its page, fix the quote and rerun; don't drop the claim. If the
@@ -113,7 +117,8 @@ curl -s -X POST "$C/api/draft" -H 'content-type: application/json' -d @- <<'EOF'
 {"publisher": "0x…", "question": "…?", "teaser": "the answer in one line, with its numbers",
  "answer": "…", "fresh_for": "P30D", "cost_tokens": 40000, "model": "<your model id>",
  "claims": [{"text": "…", "url": "https://…", "quote": "exact words from the page"}],
- "caveats": "…", "lineage": ["<the stale or near finding's id, if this replaces or builds on it>"]}
+ "caveats": "…", "lineage": ["<the stale or near finding's id, if this replaces or builds on it>"],
+ "pins": ["npm:<package>@<version> the code was read from, if any"]}
 EOF
 ```
 

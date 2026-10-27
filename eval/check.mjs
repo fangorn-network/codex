@@ -9,7 +9,11 @@ import { HIT, NEAR, check } from "../site/codex.mjs";
 const [where, file = "eval/check.jsonl"] = process.argv.slice(2);
 const labels = readFileSync(file, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
 let ask;
-if (/^https?:/.test(where)) ask = async (q) => (await fetch(`${where.replace(/\/$/, "")}/api/check?q=${encodeURIComponent(q)}`)).json();
+// The site's scores, re-judged with this checkout's HIT and NEAR, so a threshold change is scored before it deploys.
+if (/^https?:/.test(where)) ask = async (q) => {
+  const c = await (await fetch(`${where.replace(/\/$/, "")}/api/check?q=${encodeURIComponent(q)}`)).json(), s = c.finding?.score ?? 0;
+  return { ...c, verdict: s < NEAR ? "miss" : s < HIT ? "near" : c.verdict === "stale" ? "stale" : "hit" };
+};
 else {
   const { embedQueryDirect, unpackVec } = await import("@fangorn-network/westmarch/embed");
   const rows = [];

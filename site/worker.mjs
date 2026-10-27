@@ -57,6 +57,7 @@ const DRAFT = { name: "draft", description: "After researching: turn your resear
     publisher: { type: "string", pattern: "^0x[0-9a-fA-F]{40}$" }, text: { type: "string" },
     question: { type: "string" }, teaser: { type: "string" }, answer: { type: "string" }, topic: { type: "string" }, tags: { type: "array", items: { type: "string" } },
     fresh_for: { type: "string", description: "PnD, PnW, PnM or PnY" }, caveats: { type: "string" },
+    pins: { type: "array", items: { type: "string" }, description: "Packages the finding's code was read from, as npm:<package>@<version>. It goes stale when the package's latest version leaves the pin's caret range, whatever fresh_for says." },
     claims: { type: "array", items: { anyOf: [{ type: "string" }, { type: "object", properties: { text: { type: "string" }, url: { type: "string" }, quote: { type: "string" },
       app: { type: "string", description: "Instead of url: the appId (0x and 64 hex) of the Fangorn app whose record says it" }, id: { type: "string", description: "With app: the record id, as that app's search or get returns it" } } }] } },
     sources: { type: "array", items: { anyOf: [{ type: "string" }, { type: "object", properties: { app: { type: "string" }, id: { type: "string" } }, required: ["app", "id"] }] } }, lineage: { type: "array", items: { type: "string" } },
@@ -86,8 +87,20 @@ const mcp = (env, origin, method, params) => stock.fetch(new Request(`${origin}/
 async function rows(env, origin) {
   await mcp(env, origin, "tools/list", {});
   const [rs, by] = await Promise.all([loadShard(`${origin}/view`), pushers(env)]);
-  for (const r of rs) r.owner = by.get(r.finding_id) ?? null;
+  const latest = await latestVersions(rs);
+  for (const r of rs) { r.owner = by.get(r.finding_id) ?? null; if (r.pins?.length) r.latest = latest; }
   return rs;
+}
+// The latest npm version of every package a finding pins, kept per isolate for 6 hours.
+// A registry that fails leaves the package out: a pin it can't check stays fresh.
+const _latest = new Map();
+async function latestVersions(rs) {
+  const names = new Set(rs.flatMap((r) => (r.pins ?? []).map((p) => /^npm:(@?[^@\s]+)@/.exec(p)?.[1]).filter(Boolean)));
+  await Promise.all([...names].filter((n) => !(_latest.get(n)?.at > Date.now() - 6 * 36e5)).map(async (n) => {
+    const v = await fetch(`https://registry.npmjs.org/${n}/latest`).then((x) => x.ok ? x.json() : null).then((j) => j?.version).catch(() => null);
+    if (v) _latest.set(n, { v, at: Date.now() });
+  }));
+  return Object.fromEntries([...names].filter((n) => _latest.has(n)).map((n) => [n, _latest.get(n).v]));
 }
 // The wallet that pushed each finding: its domain's owner, read off the domain's shards, since rows
 // don't carry it (westmarch's toRow drops it). Unlike a finding's `publisher`, it can't be claimed.
