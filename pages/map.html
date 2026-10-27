@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>codex map</title>
+<link rel="stylesheet" href="./codex.css">
+<link rel="stylesheet" href="./theme.css">
+<body>
+<main>
+  <h1>What codex answers</h1>
+  <p class="muted">Ask a question you were about to research. codex says whether it already holds a fresh finding for it, and where it sits among what is here. Agents get the same answer from <code>check</code>.</p>
+  <form class="ask" id="ask"><input id="q" type="search" aria-label="Your question" placeholder="what does coinbase charge to settle x402 payments" autocomplete="off"><button>Check</button></form>
+  <div id="verdict" aria-live="polite"></div>
+  <h2>Every finding, by meaning</h2>
+  <p class="muted">Each dot is a finding; nearby dots ask related things. Labels sit at each topic's centre. Your question is the red dot.</p>
+  <svg class="map" id="map" viewBox="0 0 640 400" role="img" aria-label="Findings placed by meaning"></svg>
+  <h2>The same, as a list</h2>
+  <ul class="list" id="table"></ul>
+</main>
+<script type="module">
+import { codex } from "./tools.js";
+import { esc, fresh } from "./page.js";
+
+const svg = document.getElementById("map"), W = 640, H = 400, PAD = 40;
+let near = new Set();
+
+function draw(m) {
+    const xs = [...m.points.map((p) => p.x), m.query?.x ?? 0], ys = [...m.points.map((p) => p.y), m.query?.y ?? 0];
+    const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+    const sx = (x) => PAD + (x - x0) / ((x1 - x0) || 1) * (W - 2 * PAD), sy = (y) => H - PAD - (y - y0) / ((y1 - y0) || 1) * (H - 2 * PAD);
+    svg.innerHTML = m.topics.map((t) => `<text x="${sx(t.x)}" y="${sy(t.y) - 12}" text-anchor="middle">${esc(t.topic)}</text>`).join("")
+        + m.points.map((p) => `<a href="wiki.html#${esc(p.id)}"><circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="7" tabindex="0" class="${near.has(p.id) ? "near" : ""}">
+            <title>${esc(p.question)} (${esc(p.topic)}${p.stale ? ", stale" : ""})</title></circle></a>`).join("")
+        + (m.query ? `<circle class="q" cx="${sx(m.query.x)}" cy="${sy(m.query.y)}" r="6"><title>Your question</title></circle>` : "");
+    const by = Object.groupBy(m.points, (p) => p.topic);
+    document.getElementById("table").innerHTML = Object.entries(by).sort().map(([t, ps]) => `<li class="row"><strong>${esc(t)}</strong>${
+        ps.map((p) => `<a class="title" href="wiki.html#${esc(p.id)}">${esc(p.question)}</a>`).join("")}</li>`).join("");
+}
+
+function say(c) {
+    const f = c.finding;
+    document.getElementById("verdict").innerHTML = `<div class="verdict ${esc(c.verdict)}"><strong>${esc(c.verdict)}</strong> · ${esc(c.next)}
+      ${f ? `<p><a href="wiki.html#${esc(f.id)}">${esc(f.question)}</a><br><small>${esc(f.teaser)} · similarity ${f.score} · ${fresh(f)}</small></p>` : ""}
+      <small>Nearest topics: ${c.where.map((w) => `${esc(w.topic)} (${w.findings}, ${w.similarity})`).join(", ")} · codex holds ${c.holds} findings</small></div>`;
+}
+
+document.getElementById("ask").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = document.getElementById("q").value.trim();
+    if (!q) return;
+    history.replaceState(null, "", `#${encodeURIComponent(q)}`);
+    const [c, m] = await Promise.all([codex.check(q), codex.map(q)]);
+    near = new Set([c.finding, ...(c.also ?? [])].filter(Boolean).map((f) => f.id));
+    say(c); draw(m);
+});
+const q0 = decodeURIComponent(location.hash.slice(1));
+if (q0) { document.getElementById("q").value = q0; document.getElementById("ask").requestSubmit(); }
+else codex.map().then(draw);
+</script>
+</body>
+</html>

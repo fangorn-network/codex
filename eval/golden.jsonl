@@ -1,0 +1,9 @@
+{"id":"x402-paraphrase","q":"what does coinbase charge to settle x402 payments","expect":{"where":{"topic":"payments"}},"min":0.2,"goal":"reuse"}
+{"id":"webmcp-paraphrase","q":"is navigator.modelContext shipped in chrome yet","expect":{"match":{"question":"webmcp"}},"min":0.2,"goal":"reuse"}
+{"id":"erc8004-paraphrase","q":"trustless agents registry addresses on base testnet","expect":{"match":{"question":"8004"}},"min":0.2,"goal":"reuse"}
+{"id":"cf-paraphrase","q":"how big can a file be on cloudflare pages free","expect":{"where":{"topic":"hosting"}},"min":0.2,"goal":"reuse"}
+{"id":"every-claim-cited","kind":"records","expect":{"not":{"match":{"uncited_claims":"^0$"}}},"max_pct":0,"hard":true,"goal":"provenance"}
+{"id":"has-citations","kind":"records","expect":{"not":{"match":{"citation_urls":"^https?://"}}},"max_pct":0,"hard":true,"goal":"provenance"}
+{"id":"short-teaser","kind":"records","expect":{"match":{"teaser":"^.{141,}$"}},"max_pct":0,"goal":"reuse"}
+{"id":"dated","kind":"records","expect":{"not":{"match":{"found_at":"^\\d{4}-\\d\\d-\\d\\dT","fresh_for":"^P"}}},"max_pct":0,"goal":"reuse"}
+{"id":"topic-fixed","kind":"records","expect":{"not":{"match":{"topic":"^(payments|chain|llm-pricing|hosting|storage|web-platform|ml)$"}}},"max_pct":0,"goal":"reuse"}

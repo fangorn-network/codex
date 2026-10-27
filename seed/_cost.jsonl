@@ -1,0 +1,4 @@
+{"file":"erc8004-status.json","model":"claude-sonnet-5-5","tokens":44044,"tool_calls":9,"seconds":39.6}
+{"file":"cloudflare-free-limits.json","model":"claude-sonnet-5-5","tokens":43953,"tool_calls":10,"seconds":45.2}
+{"file":"x402-facilitator.json","model":"claude-sonnet-5-5","tokens":46696,"tool_calls":10,"seconds":48.1}
+{"file":"webmcp-status.json","model":"claude-sonnet-5-5","tokens":50260,"tool_calls":10,"seconds":58.2}

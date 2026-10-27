@@ -1,0 +1,18 @@
+{
+"question":"What does the Coinbase-hosted (CDP) x402 facilitator charge per settlement, and which networks and assets does it currently support?",
+"topic":"payments",
+"tags":["x402","coinbase","cdp","facilitator","usdc","pricing"],
+"teaser":"CDP x402 facilitator: first 1,000 onchain tx/month free, then $0.001 each; Base, Polygon, Arbitrum, Monad, World, Solana.",
+"fresh_for":"P30D",
+"claims":[
+{"text":"The CDP facilitator charges $0.001 per onchain transaction after the first 1,000 each month, which are free.","cites":[0]},
+{"text":"Supported mainnets include Base, Polygon, Arbitrum, Monad, World (EVM, exact/upto/batch-settlement schemes) and Solana (exact/upto).","cites":[0]},
+{"text":"Assets: all ERC-20 tokens on its EVM networks via EIP-3009 or Permit2, and SPL tokens on Solana.","cites":[0]}
+],
+"answer":"Coinbase's CDP-hosted x402 facilitator is free for the first 1,000 onchain facilitator transactions each month; each additional onchain transaction costs $0.001. Fees track onchain activity rather than payment requests, and payment verification is free. Network gas is separate.\n\nEVM networks listed (x402 v2): Base, Polygon, Arbitrum, Monad and World, each with exact, upto and batch-settlement schemes, plus testnets (Base Sepolia, World Sepolia). Solana and Solana Devnet support exact and upto.\n\nAssets: any ERC-20 on the EVM networks through EIP-3009 or Permit2, and SPL tokens on Solana.",
+"citations":[
+{"url":"https://docs.cdp.coinbase.com/x402/network-support","retrieved_at":"2026-10-26T22:00:08Z","sha256":"14614229a3b09f0cb3f9fa997e3878f5e01b565f846d5f496c82f6d98547b6d4","excerpt":"then each additional onchain transaction costs $0.001.","note":"Same page also holds the network table (e.g. <td>Arbitrum</td><td><code>eip155:42161</code></td><td><code>exact</code>, <code>upto</code>, <code>batch-settlement</code></td>) and: The CDP Facilitator supports all ERC-20 tokens on its EVM networks through EIP-3009 or Permit2, and SPL tokens on Solana. Raw saved at /dev/shm/x402-1.html. Page is JS-rendered, excerpt is from embedded raw markup."}
+],
+"method":{"tools":["web_search","web_fetch","curl"]},
+"caveats":"Pricing sentence also appears on the facilitator core-concepts page (same bytes served). Docs table lists networks per scheme; did not independently verify live /supported endpoint. Gas costs and any enterprise pricing not confirmed."
+}

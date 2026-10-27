@@ -1,0 +1,6 @@
+/* codex's paint, over the stock page and codex's own: an encyclopedia's serif for headings. */
+:root { --font-display: "Iowan Old Style", "Palatino Linotype", Charter, Georgia, serif; }
+/* One header bar on every page, the search page's included: on a narrow screen the links scroll
+   sideways inside the bar instead of wrapping or widening the page. */
+.bar nav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; white-space: nowrap; scrollbar-width: none; }
+.bar nav > span { flex-wrap: nowrap; }

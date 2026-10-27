@@ -1,0 +1,20 @@
+{
+  "question": "What is the current status of ERC-8004 (Trustless Agents), and where are its Identity, Reputation and Validation registries deployed on Base Sepolia?",
+  "topic": "chain",
+  "tags": ["erc-8004", "base-sepolia", "agents", "identity-registry", "reputation-registry", "validation-registry"],
+  "teaser": "ERC-8004 is still a Draft EIP; Base Sepolia has Identity and Reputation registries deployed, no Validation Registry address published.",
+  "fresh_for": "P30D",
+  "claims": [
+    {"text": "The ERC-8004 EIP page still labels the proposal as DRAFT (created 2025-08-13).", "cites": [0]},
+    {"text": "On Base Sepolia the official IdentityRegistry is 0x8004A818BFB912233c491871b3d84c89A494BD9e.", "cites": [1]},
+    {"text": "On Base Sepolia the official ReputationRegistry is 0x8004B663056A597Dffe9eCcC1965A193B7388713.", "cites": [1]},
+    {"text": "The reference contracts repo lists no ValidationRegistry address for Base Sepolia; the Validation Registry spec is flagged as still under active update with the TEE community.", "cites": [1]}
+  ],
+  "answer": "ERC-8004 (Trustless Agents) is still a Draft on eips.ethereum.org as of 2026-10-26; the citation format on the page reads '[DRAFT]'. It has nonetheless been deployed on multiple chains, including Base mainnet and Base Sepolia, by the erc-8004-contracts reference repo.\n\nBase Sepolia: IdentityRegistry 0x8004A818BFB912233c491871b3d84c89A494BD9e and ReputationRegistry 0x8004B663056A597Dffe9eCcC1965A193B7388713. The same vanity addresses are reused on other testnets in that repo.\n\nValidation Registry: the repo's address list gives only Identity and Reputation for Base Sepolia. The README warns the Validation Registry portion of the spec is still under active update and discussion with the TEE community, so treat it as not deployed or not final there.",
+  "citations": [
+    {"url": "https://eips.ethereum.org/EIPS/eip-8004", "retrieved_at": "2026-10-26T22:00:09Z", "sha256": "8f293d534475249fab246624438a2650ce19e2d56b7706ae7977180463f70e17", "excerpt": "\"ERC-8004: Trustless Agents [DRAFT],\"", "note": "Raw saved at /dev/shm/erc8004-1.html"},
+    {"url": "https://raw.githubusercontent.com/erc-8004/erc-8004-contracts/master/README.md", "retrieved_at": "2026-10-26T22:00:09Z", "sha256": "0fa22248188fc2455c0c7c5e31836f09a92cfeb34e27f61e778d1d9e276fb3cb", "excerpt": "The **Validation Registry** portion of the ERC-8004 spec is **still under active update and discussion with the TEE community**.", "note": "Raw saved at /dev/shm/erc8004-2.html; same page lists the Base Sepolia Identity and Reputation addresses under '#### Base Sepolia'."}
+  ],
+  "method": {"tools": ["web_search", "web_fetch", "curl"]},
+  "caveats": "Did not verify on-chain (basescan) that the contracts have code; absence of a Validation Registry address is from the repo README only. Draft status read from the citation line, not a status table row."
+}

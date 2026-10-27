@@ -1,0 +1,78 @@
+{
+ "question": "What are Cloudflare Workers static-assets and Pages limits on the free plan: max file size, max files per deployment, and daily request limits?",
+ "topic": "hosting",
+ "tags": [
+  "cloudflare",
+  "workers",
+  "pages",
+  "static-assets",
+  "free-plan",
+  "limits"
+ ],
+ "teaser": "Cloudflare Free: 20,000 files per deploy, 25 MiB per file, Workers capped at 100,000 requests/day.",
+ "fresh_for": "P60D",
+ "claims": [
+  {
+   "text": "Workers static assets on Free allow 20,000 files per Worker version (100,000 on paid).",
+   "cites": [
+    2
+   ]
+  },
+  {
+   "text": "Pages sites on the Free plan can contain up to 20,000 files.",
+   "cites": [
+    1
+   ]
+  },
+  {
+   "text": "Maximum single file size is 25 MiB for both Pages assets and Workers static assets.",
+   "cites": [
+    3
+   ]
+  },
+  {
+   "text": "Workers Free accounts have a daily limit of 100,000 requests, resetting at midnight UTC.",
+   "cites": [
+    0
+   ]
+  }
+ ],
+ "answer": "Max file size: 25 MiB per individual asset, for both Pages and Workers static assets (same on paid plans).\n\nFiles per deployment: 20,000 on the Free plan for both Pages sites and Workers static assets (per Worker version); paid plans allow 100,000.\n\nDaily requests: Workers Free accounts get 100,000 requests/day, resetting at midnight UTC, after which Cloudflare returns Error 1027. The Workers limits page also notes route mode fail-open/fail-closed behavior when exceeded.",
+ "citations": [
+  {
+   "url": "https://developers.cloudflare.com/workers/platform/limits/",
+   "retrieved_at": "2026-10-26T22:00:12Z",
+   "sha256": "92f0a8175221385e0188ec04df34671a20b2b0c24225bc2b099c9addce0824f3",
+   "excerpt": "Accounts on the Workers Free plan have a daily request limit of 100,000 requests, resetting at midnight UTC.",
+   "note": "Same page's Static Assets table (HTML table cells) lists Files per Worker version 20,000 (Free) / 100,000 (Paid) and Individual file size 25 MiB for both; excerpt for that is in citation 1."
+  },
+  {
+   "url": "https://developers.cloudflare.com/pages/platform/limits/",
+   "retrieved_at": "2026-10-26T22:00:12Z",
+   "sha256": "6dfd49f9f53c277fc9e60a1585730e0e2f2302ebfd204f0d9e7254f11016240a",
+   "excerpt": "Cloudflare Pages sites can contain up to 20,000 files on the Free plan.",
+   "note": "Max file size sentence on same page: The maximum file size for a single Cloudflare Pages site asset is 25 MiB."
+  },
+  {
+   "url": "https://developers.cloudflare.com/workers/platform/limits/",
+   "retrieved_at": "2026-10-26T22:00:12Z",
+   "sha256": "92f0a8175221385e0188ec04df34671a20b2b0c24225bc2b099c9addce0824f3",
+   "excerpt": "<td>Files per Worker version</td>\n<td>20,000</td>\n<td>100,000</td>",
+   "note": "Raw HTML table row (columns: Limit, Workers Free, Workers Paid); next row is Individual file size 25 MiB / 25 MiB."
+  },
+  {
+   "url": "https://developers.cloudflare.com/pages/platform/limits/",
+   "retrieved_at": "2026-10-26T22:00:12Z",
+   "sha256": "6dfd49f9f53c277fc9e60a1585730e0e2f2302ebfd204f0d9e7254f11016240a",
+   "excerpt": "The maximum file size for a single Cloudflare Pages site asset is 25 MiB."
+  }
+ ],
+ "method": {
+  "tools": [
+   "web_search",
+   "web_fetch",
+   "curl"
+  ]
+ },
+ "caveats": "Did not verify whether requests for static assets count toward the 100,000/day Worker request cap or are free/unlimited. Pages Functions request quota not separately checked."
+}

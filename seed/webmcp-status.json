@@ -1,0 +1,24 @@
+{
+  "question": "What is the browser support status of WebMCP (document.modelContext / navigator.modelContext): which browsers and versions ship it, behind which flags, and where is the spec?",
+  "topic": "web-platform",
+  "tags": ["webmcp", "chrome", "modelcontext", "browser-support", "w3c", "agents"],
+  "teaser": "WebMCP is Chrome-only and still preview: flag chrome://flags/#enable-webmcp-testing; spec is a W3C WebML CG draft; no stable release.",
+  "fresh_for": "P30D",
+  "claims": [
+    {"text": "The WebMCP spec is a Draft Community Group Report (not a W3C standard) published by the W3C Web Machine Learning Community Group at webmachinelearning.github.io/webmcp, source repo github.com/webmachinelearning/webmcp.", "cites": [0]},
+    {"text": "Chrome first shipped WebMCP in Chrome 146 Canary (February 2026) behind a flag; as of October 2026 it remains in Canary with no stable release date announced.", "cites": [2]},
+    {"text": "To enable locally in Chrome: set chrome://flags/#enable-webmcp-testing to Enabled and fully relaunch; one third-party source also says an origin trial runs starting Chrome 149.", "cites": [1]},
+    {"text": "Chrome for Developers lists WebMCP as available for prototyping to early preview program participants.", "cites": [3]},
+    {"text": "Safari and Firefox have not publicly signalled support; Edge is expected to follow Chromium (secondary source).", "cites": [2]},
+    {"text": "One blog says the canonical API is document.modelContext as of Chrome 150, deprecating the earlier navigator.modelContext alias (single secondary source).", "cites": [2]}
+  ],
+  "answer": "WebMCP is a W3C Web Machine Learning Community Group draft (Draft Community Group Report), not a Recommendation. The spec lives at https://webmachinelearning.github.io/webmcp/ with source at https://github.com/webmachinelearning/webmcp.\n\nOnly Chromium/Chrome has an implementation. It first appeared in Chrome 146 Canary in February 2026 behind a flag, and as of October 2026 it has no announced stable release. For local testing, open chrome://flags/#enable-webmcp-testing, set it to Enabled and relaunch Chrome fully. The API is only exposed in secure contexts (HTTPS or localhost). A third-party guide says an origin trial starts in Chrome 149, and Chrome for Developers offers an early preview program for prototyping.\n\nSafari and Firefox have not publicly committed. Edge, being Chromium-based, is expected to follow Chrome. Naming: the spec defines the surface as a partial interface on Document (document.modelContext); older previews and many articles use navigator.modelContext, and one source says Chrome 150 made document.modelContext canonical and deprecated the navigator alias. Feature-detect both.",
+  "citations": [
+    {"url": "https://webmachinelearning.github.io/webmcp/", "retrieved_at": "2026-10-26T22:00:11Z", "sha256": "5627596668946732cffb354d265d01f20ebba7d436a46a646e0768751d63ca40", "excerpt": "Draft Community Group Report</a>,", "note": "Raw HTML excerpt; spec page also credits the Web Machine Learning Community Group."},
+    {"url": "https://mcpservers.org/learn/chrome-webmcp", "retrieved_at": "2026-10-26T22:00:14Z", "sha256": "c727a3f5aa1c4348de0dbeb18ae9b7b53af65c02f65894104f9687971fb07670", "excerpt": "Chrome offers WebMCP through an origin trial starting in Chrome 149 and through the chrome://flags/#enable-webmcp-testing flag for local development and testing.", "note": "Third-party site; origin-trial claim not confirmed on a Chrome page."},
+    {"url": "https://codex.danielvaughan.com/2026/10/15/webmcp-browser-native-model-context-protocol-navigator-modelcontext-agent-web/", "retrieved_at": "2026-10-26T22:00:15Z", "sha256": "cf751a92cb6b2cc3598ea7b99845f70bea6019d5a85884261d34120728cbd331", "excerpt": "Chrome 146 Canary shipped the first WebMCP implementation in February 2026 as an early preview behind a flag. As of October 2026, it remains in Canary with no stable channel release date announced.", "note": "Secondary blog; also source for Safari/Firefox, Edge and Chrome 150 alias claims (\"as of Chrome 150, which deprecated the earlier\")."},
+    {"url": "https://developer.chrome.com/blog/webmcp-epp", "retrieved_at": "2026-10-26T22:00:14Z", "sha256": "77e3d0198c2ec42365259650dd3856a3a4a8029d491ffc468cc15c93d6213172", "excerpt": "WebMCP is available for prototyping to early preview program participants.", "note": "Official Chrome for Developers blog."}
+  ],
+  "method": {"tools": ["web_search", "web_fetch", "curl"]},
+  "caveats": "No Chrome Status or Chromium source page fetched, so Chrome 149 origin trial and Chrome 150 document.modelContext canonicalization rest on single third-party sources; Safari/Firefox/Edge status is from a secondary blog. The spec page's Document-interface placement was seen in raw HTML but not quoted."
+}

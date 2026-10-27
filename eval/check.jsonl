@@ -1,0 +1,24 @@
+{"q":"what does coinbase charge to settle x402 payments","hit":"codex:finding:653b4998346749a7"}
+{"q":"CDP facilitator fees and supported networks for x402","hit":"codex:finding:653b4998346749a7"}
+{"q":"is the coinbase x402 facilitator free, and which chains does it work on","hit":"codex:finding:653b4998346749a7"}
+{"q":"is webmcp shipped in chrome","hit":"codex:finding:9103cdbce4b263f2"}
+{"q":"which browsers support navigator.modelContext and behind what flag","hit":"codex:finding:9103cdbce4b263f2"}
+{"q":"has chrome turned on the agent tools api for web pages","hit":"codex:finding:9103cdbce4b263f2","near_ok":true,"why":"never names WebMCP; near with the right finding is enough"}
+{"q":"where is the ERC-8004 identity registry deployed on base sepolia","hit":"codex:finding:7a5a206a881e28a9"}
+{"q":"status of the trustless agents EIP and its registry addresses","hit":"codex:finding:7a5a206a881e28a9"}
+{"q":"cloudflare workers free plan limits for static assets and requests per day","hit":"codex:finding:e8dcee3f9e2d9a88"}
+{"q":"max file size and number of files for a Cloudflare Pages deployment on the free tier","hit":"codex:finding:e8dcee3f9e2d9a88"}
+{"q":"what does stripe charge per card transaction in the US"}
+{"q":"how much does Circle charge to mint USDC"}
+{"q":"which wallets support EIP-7702 delegation today"}
+{"q":"what is the gas limit per block on Base mainnet"}
+{"q":"does Safari support the View Transitions API across documents"}
+{"q":"is the Prompt API (window.ai) available in Chrome stable"}
+{"q":"Vercel hobby plan bandwidth and function limits"}
+{"q":"Cloudflare R2 free tier storage and operation limits"}
+{"q":"Pinata free plan limits"}
+{"q":"price per million tokens for Claude Haiku"}
+{"q":"best embedding model for semantic search under 300M parameters"}
+{"q":"how do I bake sourdough bread with a stiff starter"}
+{"q":"current population of Lisbon"}
+{"q":"which LLMs support structured JSON output natively"}
