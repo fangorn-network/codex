@@ -16,7 +16,7 @@ if (!html.includes(tag)) html = html.replace(/<html[^>]*>/i, (m) => `${m}\n${tag
 // codex's name goes to the front page on every page, as it does on codex's own.
 writeFileSync(search, html.replace('id="home" href="#/"', 'id="home" href="./"'));
 copyFileSync(".ship/site/home.html", index);
-cpSync("skill", ".ship/site/skill", { recursive: true });   // the Claude Code skill, served for `curl` installs
+cpSync("plugin/skills", ".ship/site/skill", { recursive: true });   // the Claude Code skill, served for `curl` installs
 
 execFileSync("npx", ["wrangler", "deploy", "--config", ".ship/wrangler.codex.json", ...(process.argv.includes("--dry-run") ? ["--dry-run"] : [])],
     { stdio: "inherit", env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: w.account_id ?? process.env.CLOUDFLARE_ACCOUNT_ID } });

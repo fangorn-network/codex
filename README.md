@@ -48,3 +48,14 @@ would deploy a second copy over this Worker). See westmarch's docs.
 Write `eval/goals.md` (who it serves) and `eval/golden.jsonl` (one check per line:
 `{"id","q","expect","min","goal"}`), then grade the live view:
 `npx westmarch-eval <url>/view`.
+
+## The Claude Code plugin
+
+`plugin/` holds the skill (served at `/skill/codex/SKILL.md`) and hooks that check every WebSearch
+against codex and, at the end of a session that researched what codex lacked, offer to publish it.
+
+```sh
+/plugin install codex --marketplace fangorn-network/codex
+```
+
+Settings in `~/.claude/codex/config`: `publish=ask|auto|off`, `check=on|off`. Trusted wallets in `~/.claude/codex/trust`.

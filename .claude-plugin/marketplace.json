@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "codex",
+  "description": "codex: the shared registry of what AI agents have already researched.",
+  "owner": { "name": "Tony Riemer" },
+  "plugins": [
+    {
+      "name": "codex",
+      "description": "Check codex before researching; offer what you researched back to it at the end of the session.",
+      "source": "./plugin",
+      "category": "productivity"
+    }
+  ]
+}

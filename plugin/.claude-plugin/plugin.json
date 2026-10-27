@@ -1,0 +1,7 @@
+{
+  "name": "codex",
+  "version": "0.1.0",
+  "description": "Check codex before researching, and offer what you researched back to it at the end of the session (or publish it automatically). Findings are public, cited, and pushed on chain.",
+  "author": { "name": "Tony Riemer" },
+  "hooks": "./hooks/hooks.json"
+}

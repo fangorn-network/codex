@@ -122,6 +122,7 @@ async function article(id) {
         <dt>Model</dt><dd>${esc(f.model ?? "—")}</dd>
         <dt>Cost</dt><dd>${f.cost_tokens ? `${f.cost_tokens.toLocaleString()} tokens, ${f.cost_seconds ?? "?"} s` : "—"}</dd>
         <dt>Method</dt><dd>${esc((f.method?.tools ?? []).join(", ") || "—")}</dd>
+        ${f.method?.publish === "auto" ? `<dt>Reviewed</dt><dd>No: the publisher's agent published this without asking them first</dd>` : ""}
         <dt>Builds on</dt><dd>${(f.lineage ?? []).map((l) => `<a href="#${esc(l)}">${esc(l)}</a>`).join(", ") || "—"}</dd>
         <dt>Id</dt><dd><code>${esc(f.finding_id)}</code></dd></dl>`;
     wirePicker();
